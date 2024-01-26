@@ -18,10 +18,17 @@ end
 local LoadExistingDoorlockLocations = function ()
 
 	for _, result in ipairs(Config.DoorsList) do
-		DoorsList[_]            = {}
-		DoorsList[_]            = result
+		DoorsList[_]                = {}
+		DoorsList[_]                = result
+
+		DoorsList[_].locationId     = 'none'
+		DoorsList[_].owned          = 0
+		DoorsList[_].charidentifier = 0
+
+		DoorsList[_].keyholders     = {}
 	end
 
+	LoadedDoorsList = true
 end
 
 -----------------------------------------------------------
@@ -34,41 +41,6 @@ AddEventHandler('onResourceStart', function(resourceName)
 	end
 
 	LoadExistingDoorlockLocations()
-
-    exports["ghmattimysql"]:execute("SELECT * FROM doors", {}, function(result)
-
-		local length = GetTableLength(result)
-
-		if GetTableLength(result) <= 0 then
-			LoadedDoorsList = true
-			return
-		end
-
-		local count = length
-
-        for index, res in pairs (result) do
-			count = count + 1
-
-			DoorsList[count] = {}
-
-			DoorsList[count].index          = index
-			DoorsList[count].authorizedJobs = { 'none' }
-			DoorsList[count].doors          = json.decode(res.doors)
-			DoorsList[count].textCoords     = DoorsList[count].doors[1].objCoords
-			DoorsList[count].locked         = true
-			DoorsList[count].distance       = 2.0
-
-			local canBreakIn = false
-
-			if res.canBreakIn == 1 then
-				canBreakIn = true
-			end
-
-			DoorsList[count].canBreakIn     = canBreakIn
-		end
-
-		LoadedDoorsList = true
-	end)
 
 end)
 
@@ -101,15 +73,76 @@ AddEventHandler("tpz_doorlocks:requestDoorlocks", function()
 end)
 
 
-RegisterServerEvent("tpz_doorlocks:createNewDoorlock")
-AddEventHandler("tpz_doorlocks:createNewDoorlock", function(doors, canBreakIn)
+-- @locationId : Where or what property (name of property) the new door will be registered to.
+RegisterServerEvent("tpz_doorlocks:registerNewDoorlock")
+AddEventHandler("tpz_doorlocks:registerNewDoorlock", function(locationId, doors, canBreakIn, keyholders, charidentifier)
 
-	local Parameters =  { 
-		['doors']      = json.encode(doors),
-		['canBreakIn'] = canBreakIn,
-	}
+	while not LoadedDoorsList do
+		Wait(1000)
+	end
 
-	exports.ghmattimysql:execute("INSERT INTO `doors` ( `doors`, `canBreakIn` ) VALUES ( @doors, @canBreakIn )", Parameters )
+	local length = GetTableLength(DoorsList)
+	local doorId = length + 1
+
+	DoorsList[doorId]                = {}
+
+	DoorsList[doorId].index          = doorId
+	
+	DoorsList[doorId].authorizedJobs = { 'none' }
+	DoorsList[doorId].doors          = doors
+	DoorsList[doorId].textCoords     = doors[1].textCoords
+	DoorsList[doorId].locked         = true
+
+	DoorsList[doorId].distance       = 2.0
+
+	DoorsList[doorId].canBreakIn     = canBreakIn
+	DoorsList[doorId].locationId     = locationId
+
+	DoorsList[doorId].keyholders     = keyholders
+
+	DoorsList[doorId].owned          = 1
+	DoorsList[doorId].charidentifier = charidentifier
+
+	TriggerClientEvent("tpz_doorlocks:registerNewDoorlock", -1, doorId, doors, canBreakIn, keyholders, 1, charidentifier)
+	
+end)
+
+
+RegisterServerEvent("tpz_doorlocks:registerDoorlockKeyholder")
+AddEventHandler("tpz_doorlocks:registerDoorlockKeyholder", function(locationId, charidentifier, username)
+
+	for _, door in pairs (DoorsList) do
+
+		if door.locationId == locationId then
+			
+			DoorsList[_].keyholders[charidentifier]           = {}
+			DoorsList[_].keyholders[charidentifier].username  = username
+
+			TriggerServerEvent("tpz_doorlocks:registerKeyholder", -1, locationId, charidentifier, username)
+			
+			break
+		end
+
+	end
+
+end)
+
+
+RegisterServerEvent("tpz_doorlocks:unregisterDoorlockKeyholder")
+AddEventHandler("tpz_doorlocks:unregisterDoorlockKeyholder", function(locationId, charidentifier)
+
+	for _, door in pairs (DoorsList) do
+
+		if door.locationId == locationId and door.keyholders[charidentifier] then
+			
+			DoorsList[_].keyholders[charidentifier] = nil
+				
+			TriggerServerEvent("tpz_doorlocks:unregisterKeyholder", -1, locationId, charidentifier)
+
+			break
+		end
+
+	end
 
 end)
 
