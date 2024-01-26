@@ -12,14 +12,6 @@ Config.DoorKey = 0xC7B5340A
 -- The following rendering checks for near locked states / doors.
 Config.RenderDoorStateDistance = 30
 
--- The given item when someone gives permission for another player to be able
--- to access a house or another locked door which has permission to give this item.
-Config.DoorItemKey = "doorkeys"
-
--- The lockpick item which can be used for unlocking doors.
--- Unlocking will be working only on doors that can be lockpicked.
-Config.LockpickItem = "lockpick"
-
 --[[-------------------------------------------------------
  Door Locations
 ]]---------------------------------------------------------
