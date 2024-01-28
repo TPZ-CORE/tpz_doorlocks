@@ -123,34 +123,28 @@ AddEventHandler('tpz_doorlocks:registerNewDoorlock', function(doorID, doors, can
 	ClientData.DoorsList[doorID].charidentifier = charidentifier
 end)
 
--- Register to the selected property doors, the new keyholder.
-RegisterNetEvent("tpz_doorlocks:registerKeyholder")
-AddEventHandler("tpz_doorlocks:registerKeyholder", function(locationId, charidentifier, username)
+RegisterNetEvent("tpz_doorlocks:update")
+AddEventHandler("tpz_doorlocks:update", function(locationId, type, data)
 
 	for _, door in pairs (ClientData.DoorsList) do
 
 		if door.locationId == locationId then
-			
-			ClientData.DoorsList[_].keyholders[charidentifier]           = {}
-			ClientData.DoorsList[_].keyholders[charidentifier].username  = username
 
-			break
-		end
+			if type == 'TRANSFERRED' then
+		
+				ClientData.DoorsList[_].charidentifier = data[1]
 
-	end
+			elseif type == 'REGISTER_KEYHOLDER' then
 
-end)
+				ClientData.DoorsList[_].keyholders[data[1]]           = {}
+				ClientData.DoorsList[_].keyholders[data[1]].username  = data[2]
 
--- Unregister from the selected property, all doors which contains the keyholder charidentifier.
-RegisterNetEvent("tpz_doorlocks:unregisterKeyholder")
-AddEventHandler("tpz_doorlocks:unregisterKeyholder", function(locationId, charidentifier)
+			elseif type == 'UNREGISTER_KEYHOLDER' then
 
-	for _, door in pairs (ClientData.DoorsList) do
+				ClientData.DoorsList[_].keyholders[data[1]] = nil
 
-		if door.locationId == locationId and door.keyholders[charidentifier] then
-			
-			ClientData.DoorsList[_].keyholders[charidentifier] = nil
-			break
+			end
+
 		end
 
 	end
