@@ -108,39 +108,44 @@ AddEventHandler("tpz_doorlocks:registerNewDoorlock", function(locationId, doors,
 end)
 
 
-RegisterServerEvent("tpz_doorlocks:registerDoorlockKeyholder")
-AddEventHandler("tpz_doorlocks:registerDoorlockKeyholder", function(locationId, charidentifier, username)
+RegisterServerEvent("tpz_doorlocks:updateDoorlockInformation")
+AddEventHandler("tpz_doorlocks:updateDoorlockInformation", function(locationId, type, data )
 
 	for _, door in pairs (DoorsList) do
 
 		if door.locationId == locationId then
-			
-			DoorsList[_].keyholders[charidentifier]           = {}
-			DoorsList[_].keyholders[charidentifier].username  = username
 
-			TriggerServerEvent("tpz_doorlocks:registerKeyholder", -1, locationId, charidentifier, username)
-			
-			break
+			if type == 'TRANSFERRED' then
+		
+				DoorsList[_].charidentifier = data[1]
+
+			elseif type == 'REGISTER_KEYHOLDER' then
+
+				DoorsList[_].keyholders[data[1]]           = {}
+				DoorsList[_].keyholders[data[1]].username  = data[2]
+
+			elseif type == 'UNREGISTER_KEYHOLDER' then
+
+				DoorsList[_].keyholders[data[1]] = nil
+
+			end
+
 		end
 
 	end
 
-end)
+	-- We update and do client triggers outside from looping to avoid multiple calls.
+	if type == 'TRANSFERRED' then
 
+		TriggerClientEvent("tpz_doorlocks:update", -1, locationId, type, { data[1] } )
 
-RegisterServerEvent("tpz_doorlocks:unregisterDoorlockKeyholder")
-AddEventHandler("tpz_doorlocks:unregisterDoorlockKeyholder", function(locationId, charidentifier)
+	elseif type == 'REGISTER_KEYHOLDER' then
 
-	for _, door in pairs (DoorsList) do
+		TriggerClientEvent("tpz_doorlocks:update", -1, locationId, type, { data[1], data[2] } )
 
-		if door.locationId == locationId and door.keyholders[charidentifier] then
-			
-			DoorsList[_].keyholders[charidentifier] = nil
-				
-			TriggerServerEvent("tpz_doorlocks:unregisterKeyholder", -1, locationId, charidentifier)
-
-			break
-		end
+	elseif type == 'UNREGISTER_KEYHOLDER' then
+		
+		TriggerClientEvent("tpz_doorlocks:update", -1, locationId, type, { data[1] } )
 
 	end
 
