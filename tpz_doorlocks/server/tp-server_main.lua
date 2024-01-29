@@ -119,6 +119,13 @@ AddEventHandler("tpz_doorlocks:updateDoorlockInformation", function(locationId, 
 		
 				DoorsList[_].charidentifier = data[1]
 
+		        elseif type == 'RESET' then
+
+				DoorsList[_].charidentifier = 0
+
+				DoorsList[_].keyholders     = nil
+				DoorsList[_].keyholders     = {}
+
 			elseif type == 'REGISTER_KEYHOLDER' then
 
 				DoorsList[_].keyholders[data[1]]           = {}
@@ -138,6 +145,10 @@ AddEventHandler("tpz_doorlocks:updateDoorlockInformation", function(locationId, 
 	if type == 'TRANSFERRED' then
 
 		TriggerClientEvent("tpz_doorlocks:update", -1, locationId, type, { data[1] } )
+
+	elseif type == 'RESET' then
+
+		TriggerClientEvent("tpz_doorlocks:update", -1, locationId, type )
 
 	elseif type == 'REGISTER_KEYHOLDER' then
 
