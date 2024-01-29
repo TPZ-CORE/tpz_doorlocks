@@ -142,24 +142,7 @@ AddEventHandler("tpz_doorlocks:updateDoorlockInformation", function(locationId, 
 	end
 
 	-- We update and do client triggers outside from looping to avoid multiple calls.
-	if type == 'TRANSFERRED' then
-
-		TriggerClientEvent("tpz_doorlocks:update", -1, locationId, type, { data[1] } )
-
-	elseif type == 'RESET' then
-
-		TriggerClientEvent("tpz_doorlocks:update", -1, locationId, type )
-
-	elseif type == 'REGISTER_KEYHOLDER' then
-
-		TriggerClientEvent("tpz_doorlocks:update", -1, locationId, type, { data[1], data[2] } )
-
-	elseif type == 'UNREGISTER_KEYHOLDER' then
-		
-		TriggerClientEvent("tpz_doorlocks:update", -1, locationId, type, { data[1] } )
-
-	end
-
+	TriggerClientEvent("tpz_doorlocks:update", -1, locationId, type, { data[1], data[2] } )
 end)
 
 RegisterServerEvent('tpz_doorlocks:updateState')
