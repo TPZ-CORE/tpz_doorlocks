@@ -14,20 +14,34 @@ Config.RenderDoorStateDistance = 30
 
 -- Door Lockpicking is working ONLY for TPZ Properties (If a property has lockpicking enabled).
 Config.Lockpicking = {
+    Key      = 0x4AF4D473, -- Delete Key
+
     Item     = "hardlockpick",
-    Stages   = 3, -- (3) By Default, all Lockpicking stages must be successfull to unlock the property door.
-	
-    RequiredOnlineJob = { Job = "police", Minimum = 5, Notify = true },
+
+    -- (3) By Default, all Lockpicking stages must be successfull to unlock the property door.
+    -- Stages also must be the required item quantity to have for lockpicking.
+    -- That means, a player must have X3 hardlockpick items.
+    Stages                   = 3,
+    NotEnoughLockpicksNotify = "~e~You don't have enough Advanced Lockpicks (X3) Required.",
+
+    RequiredOnlineJob = { 
+        Job = "police", 
+        Minimum = 1, 
+        Notify = true,
+        NotEnoughNotify = "~e~Not enough police to start the property robbery.",
+    },
 
     -- TPZ Notify Support.
-    -- Includes Property Owner (If online) by default (Not only RequiredOnlineJob).
     NotifyMessage = { 
         title          = "Property Alert", 
-        message        = "A property of yours is getting robbed, checkout the map for the location.", -- property owner
-        message_target = "A property is getting robbed, checkout the map for the location.", -- required jobs if notify is true.
-        icon           = "alert",
+        message        = "A property is getting robbed, checkout the map for the location.", -- required jobs if notify is true.
+        icon           = "hunting",
         duration       = 10,
     },
+
+    -- Displaying the location where a property is getting robbed and its duration to stay active on the map.
+    -- Duration is also used for preventing notification spamming when police have been already notified.
+    Duration = 10, -- Time in minutes
 }
 
 --[[-------------------------------------------------------
