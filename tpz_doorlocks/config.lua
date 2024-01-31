@@ -15,7 +15,8 @@ Config.RenderDoorStateDistance = 30
 -- Door Lockpicking is working ONLY for TPZ Properties (If a property has lockpicking enabled).
 Config.Lockpicking = {
     Item     = "hardlockpick",
-
+    Stages   = 3, -- (3) By Default, all Lockpicking stages must be successfull to unlock the property door.
+	
     RequiredOnlineJob = { Job = "police", Minimum = 5, Notify = true },
 
     -- TPZ Notify Support.
