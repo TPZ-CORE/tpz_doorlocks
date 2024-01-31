@@ -2,5 +2,7 @@ Locales = {}
 
 Locales = {
     ['LOCKED']   = "Locked",
-    ['UNLOCKED'] = "Unlocked"
+    ['UNLOCKED'] = "Unlocked",
+
+    ['LOCKPICKING_FAILED'] = "~e~The lockpick broke, progress has failed.",
 }
