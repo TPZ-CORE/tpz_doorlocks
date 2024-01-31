@@ -18,14 +18,15 @@ end
 local LoadExistingDoorlockLocations = function ()
 
 	for _, result in ipairs(Config.DoorsList) do
-		DoorsList[_]                = {}
-		DoorsList[_]                = result
+		DoorsList[_]                 = {}
+		DoorsList[_]                 = result
 
-		DoorsList[_].locationId     = 'none'
-		DoorsList[_].owned          = 0
-		DoorsList[_].charidentifier = 0
+		DoorsList[_].canBreakIn      = false
+		DoorsList[_].locationId      = 'none'
+		DoorsList[_].owned           = 0
+		DoorsList[_].charidentifier  = 0
 
-		DoorsList[_].keyholders     = {}
+		DoorsList[_].keyholders      = {}
 	end
 
 	LoadedDoorsList = true
@@ -107,7 +108,6 @@ AddEventHandler("tpz_doorlocks:registerNewDoorlock", function(locationId, doors,
 	
 end)
 
-
 RegisterServerEvent("tpz_doorlocks:updateDoorlockInformation")
 AddEventHandler("tpz_doorlocks:updateDoorlockInformation", function(locationId, type, data )
 
@@ -118,13 +118,16 @@ AddEventHandler("tpz_doorlocks:updateDoorlockInformation", function(locationId, 
 			if type == 'TRANSFERRED' then
 		
 				DoorsList[_].charidentifier = data[1]
+				DoorsList[_].owned          = 1
 
-		        elseif type == 'RESET' then
+			elseif type == 'RESET' then
 
 				DoorsList[_].charidentifier = 0
 
 				DoorsList[_].keyholders     = nil
 				DoorsList[_].keyholders     = {}
+
+				DoorsList[_].owned          = 0
 
 			elseif type == 'REGISTER_KEYHOLDER' then
 
@@ -143,7 +146,9 @@ AddEventHandler("tpz_doorlocks:updateDoorlockInformation", function(locationId, 
 
 	-- We update and do client triggers outside from looping to avoid multiple calls.
 	TriggerClientEvent("tpz_doorlocks:update", -1, locationId, type, { data[1], data[2] } )
+
 end)
+
 
 RegisterServerEvent('tpz_doorlocks:updateState')
 AddEventHandler('tpz_doorlocks:updateState', function(doorID, state)
@@ -154,4 +159,3 @@ AddEventHandler('tpz_doorlocks:updateState', function(doorID, state)
 
 	TriggerClientEvent('tpz_doorlocks:setState', -1, doorID, state)
 end)
-
