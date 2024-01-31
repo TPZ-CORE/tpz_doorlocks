@@ -12,6 +12,23 @@ Config.DoorKey = 0xC7B5340A
 -- The following rendering checks for near locked states / doors.
 Config.RenderDoorStateDistance = 30
 
+-- Door Lockpicking is working ONLY for TPZ Properties (If a property has lockpicking enabled).
+Config.Lockpicking = {
+    Item     = "hardlockpick",
+
+    RequiredOnlineJob = { Job = "police", Minimum = 5, Notify = true },
+
+    -- TPZ Notify Support.
+    -- Includes Property Owner (If online) by default (Not only RequiredOnlineJob).
+    NotifyMessage = { 
+        title          = "Property Alert", 
+        message        = "A property of yours is getting robbed, checkout the map for the location.", -- property owner
+        message_target = "A property is getting robbed, checkout the map for the location.", -- required jobs if notify is true.
+        icon           = "banking",
+        duration       = 10,
+    },
+}
+
 --[[-------------------------------------------------------
  Door Locations
 ]]---------------------------------------------------------
