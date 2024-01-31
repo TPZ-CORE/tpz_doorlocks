@@ -24,7 +24,7 @@ Config.Lockpicking = {
         title          = "Property Alert", 
         message        = "A property of yours is getting robbed, checkout the map for the location.", -- property owner
         message_target = "A property is getting robbed, checkout the map for the location.", -- required jobs if notify is true.
-        icon           = "banking",
+        icon           = "alert",
         duration       = 10,
     },
 }
