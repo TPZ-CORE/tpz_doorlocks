@@ -80,6 +80,10 @@ if Config.DevMode then
     end)
 end
 
+RegisterNetEvent("tpz_core:getPlayerJob")
+AddEventHandler("tpz_core:getPlayerJob", function(data)
+	ClientData.Job = data.job
+end)
 
 -----------------------------------------------------------
 --[[ Events ]]--
