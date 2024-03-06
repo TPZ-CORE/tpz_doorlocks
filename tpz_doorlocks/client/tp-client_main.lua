@@ -137,13 +137,16 @@ AddEventHandler("tpz_doorlocks:update", function(locationId, type, data)
 			if type == 'TRANSFERRED' then
 		
 				ClientData.DoorsList[_].charidentifier = data[1]
-
+				ClientData.DoorsList[_].owned          = 1
+					
 			elseif type == 'RESET' then
 	
 				ClientData.DoorsList[_].charidentifier = 0
 
 				ClientData.DoorsList[_].keyholders     = nil
 				ClientData.DoorsList[_].keyholders     = {}
+
+				ClientData.DoorsList[_].owned          = 0
 
 			elseif type == 'REGISTER_KEYHOLDER' then
 
