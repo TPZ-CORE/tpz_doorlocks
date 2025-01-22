@@ -32,7 +32,7 @@ end)
 --[[ Callbacks  ]]--
 -----------------------------------------------------------
 
-exports.tpz_core:rServerAPI().addNewCallBack("tpz_doorlocks:canStartLockpicking", function(source, cb, data)
+exports.tpz_core:server().addNewCallBack("tpz_doorlocks:canStartLockpicking", function(source, cb, data)
 	local _source   = source
 
 	local lockpickData = Config.Lockpicking
