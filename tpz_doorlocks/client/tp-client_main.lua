@@ -1,5 +1,9 @@
 
-ClientData = { CharIdentifier = 0, Job = nil, Loaded = false, DoorsList = {}, IsLockpicking = false }
+local PlayerData = { 
+	Job       = nil, 
+	Loaded    = false, 
+	DoorsList = {}
+}
 
 -----------------------------------------------------------
 --[[ Local Functions ]]--
@@ -7,41 +11,23 @@ ClientData = { CharIdentifier = 0, Job = nil, Loaded = false, DoorsList = {}, Is
 
 local IsAuthorized = function(doorID, owned)
 
-	local data = ClientData.DoorsList[doorID]
+	local data = PlayerData.DoorsList[doorID]
 
-	if owned == 0 then
+	if data.authorizedJobs and GetTableLength(data.authorizedJobs) > 0 then
+
 		for _, job in pairs(data.authorizedJobs) do
-			if job == ClientData.Job then
+
+			if job == PlayerData.Job then
 				return true
 			end
+
 		end
 
-	else
-
-		local found  = false
-
-		if data.charidentifier == ClientData.CharIdentifier then
-			return true
-		end
-
-		local length = GetTableLength(data.keyholders)
-
-		if length > 0 then
-	 
-		   for _, keyholder in pairs (data.keyholders) do
-			  
-			  if _ == tostring(ClientData.CharIdentifier) then
-				 found = true
-			  end
-		   end
-	 
-		end
-	 
-		return found
+		return false
 
 	end
 
-	return false
+	return true
 end
 
 -----------------------------------------------------------
@@ -52,10 +38,14 @@ end
 AddEventHandler("tpz_core:isPlayerReady", function()
 
     TriggerEvent("tpz_core:ExecuteServerCallBack", "tpz_core:getPlayerData", function(data)
-		ClientData.CharIdentifier = data.charIdentifier
-        ClientData.Job = data.job
+		
+		if data == nil then
+			return
+		end
 
-		TriggerServerEvent("tpz_doorlocks:requestDoorlocks")
+        PlayerData.Job = data.job
+
+		TriggerServerEvent("tpz_doorlocks:server:requestDoorlocks")
     end)
 
 end)
@@ -71,10 +61,10 @@ if Config.DevMode then
 			if data == nil then
 				return
 			end
-			ClientData.CharIdentifier = data.charIdentifier
-            ClientData.Job = data.job
 
-			TriggerServerEvent("tpz_doorlocks:requestDoorlocks")
+            PlayerData.Job = data.job
+
+			TriggerServerEvent("tpz_doorlocks:server:requestDoorlocks")
         end)
 
     end)
@@ -82,87 +72,23 @@ end
 
 RegisterNetEvent("tpz_core:getPlayerJob")
 AddEventHandler("tpz_core:getPlayerJob", function(data)
-	ClientData.Job = data.job
+	PlayerData.Job = data.job
 end)
 
 -----------------------------------------------------------
 --[[ Events ]]--
 -----------------------------------------------------------
 
-RegisterNetEvent("tpz_doorlocks:loadDoorsList")
-AddEventHandler("tpz_doorlocks:loadDoorsList", function(data)
-	ClientData.DoorsList = data
-
-	ClientData.Loaded = true
+RegisterNetEvent("tpz_doorlocks:client:loadDoorsList")
+AddEventHandler("tpz_doorlocks:client:loadDoorsList", function(data)
+	PlayerData.DoorsList = data
+	PlayerData.Loaded    = true
 end)
 
 
-RegisterNetEvent("tpz_doorlocks:setState")
-AddEventHandler("tpz_doorlocks:setState", function(doorId, state)
-	ClientData.DoorsList[doorId].locked = state
-end)
-
-
--- Register new doorlock based on its parameters.
-RegisterNetEvent("tpz_doorlocks:registerNewDoorlock")
-AddEventHandler('tpz_doorlocks:registerNewDoorlock', function(doorID, doors, canBreakIn, keyholders, owned, charidentifier)
-
-	ClientData.DoorsList[doorID]                = {}
-
-	ClientData.DoorsList[doorID].index          = doorID
-	
-	ClientData.DoorsList[doorID].authorizedJobs = { 'none' }
-	ClientData.DoorsList[doorID].doors          = doors
-	ClientData.DoorsList[doorID].textCoords     = doors[1].textCoords
-	ClientData.DoorsList[doorID].locked         = true
-
-	ClientData.DoorsList[doorID].distance       = 2.0
-
-	ClientData.DoorsList[doorID].canBreakIn     = canBreakIn
-
-	ClientData.DoorsList[doorID].keyholders     = keyholders
-
-	ClientData.DoorsList[doorID].owned          = owned
-
-	ClientData.DoorsList[doorID].charidentifier = charidentifier
-end)
-
-RegisterNetEvent("tpz_doorlocks:update")
-AddEventHandler("tpz_doorlocks:update", function(locationId, type, data)
-
-	for _, door in pairs (ClientData.DoorsList) do
-
-		if door.locationId == locationId then
-
-			if type == 'TRANSFERRED' then
-		
-				ClientData.DoorsList[_].charidentifier = data[1]
-				ClientData.DoorsList[_].owned          = 1
-					
-			elseif type == 'RESET' then
-	
-				ClientData.DoorsList[_].charidentifier = 0
-
-				ClientData.DoorsList[_].keyholders     = nil
-				ClientData.DoorsList[_].keyholders     = {}
-
-				ClientData.DoorsList[_].owned          = 0
-
-			elseif type == 'REGISTER_KEYHOLDER' then
-
-				ClientData.DoorsList[_].keyholders[data[1]]           = {}
-				ClientData.DoorsList[_].keyholders[data[1]].username  = data[2]
-
-			elseif type == 'UNREGISTER_KEYHOLDER' then
-
-				ClientData.DoorsList[_].keyholders[data[1]] = nil
-
-			end
-
-		end
-
-	end
-
+RegisterNetEvent("tpz_doorlocks:client:setState")
+AddEventHandler("tpz_doorlocks:client:setState", function(doorId, state)
+	PlayerData.DoorsList[doorId].locked = state
 end)
 
 --[[-------------------------------------------------------
@@ -179,7 +105,7 @@ Citizen.CreateThread(function()
 		local playerPed = PlayerPedId()
 		local coords    = GetEntityCoords(playerPed)
 
-		for _, location in ipairs(ClientData.DoorsList) do
+		for _, location in ipairs(PlayerData.DoorsList) do
 
 			local dist = #(coords - location.doors[1].objCoords)
 
@@ -233,9 +159,9 @@ Citizen.CreateThread(function()
 
 		local sleep     = true
 
-		if not isDead and ClientData.Loaded then
+		if not isDead and PlayerData.Loaded then
 
-			for k, v in ipairs(ClientData.DoorsList) do
+			for k, v in ipairs(PlayerData.DoorsList) do
 
 				local distance = #(coords - v.doors[1].objCoords)
 	
@@ -303,75 +229,11 @@ Citizen.CreateThread(function()
 
 						PerformKeyAnimation(entity)
 
-						TriggerServerEvent('tpz_doorlocks:updateState', k, (not v.locked) )
+						TriggerServerEvent('tpz_doorlocks:server:updateState', k, (not v.locked) )
 						
 						Wait(500)
 					end
 					
-					if IsControlJustReleased(1, Config.Lockpicking.Key) and IsAuthorizedToLockpick(k) then
-
-						local currentStage  = 0
-						local maxStage      = Config.Lockpicking.Stages
-
-						TriggerEvent("tpz_core:ExecuteServerCallBack", "tpz_doorlocks:canStartLockpicking", function(cb)
-
-							if not cb then
-								return
-							end
-
-							TaskStandStill(playerPed, -1)  
-							FreezeEntityPosition(playerPed,true)
-
-							while not ClientData.IsLockpicking do
-
-								ClientData.IsLockpicking = true
-
-								currentStage  = currentStage + 1
-
-								TriggerServerEvent("tpz_doorlocks:removeLockpickItem")
-
-								local result = exports["lockpick"]:lockpick()
-
-								if not result then
-									SendNotification(nil, Locales['LOCKPICKING_FAILED'], "error")
-
-									TaskStandStill(playerPed, 1)  
-									FreezeEntityPosition(playerPed, false)
-									ClientData.IsLockpicking = false
-
-									ClearPedSecondaryTask(playerPed)
-									RemoveAnimDict("script_proc@rustling@olar@player_picklock")
-
-									break
-								end
-
-								if currentStage == maxStage then
-									ClearPedSecondaryTask(playerPed)
-									RemoveAnimDict("script_proc@rustling@olar@player_picklock")
-
-									TaskStandStill(playerPed, 1)  
-									FreezeEntityPosition(playerPed, false)
-
-									local entity = Citizen.InvokeNative(0xF7424890E4A094C0, v.doors[1].object, 0)
-									PerformKeyAnimation(entity)
-
-									TriggerServerEvent('tpz_doorlocks:updateState', k, (not v.locked) )
-									ClientData.IsLockpicking = false
-
-									break
-								else
-									ClientData.IsLockpicking = false
-
-									Wait(1000)
-								end
-
-							end
-
-						end, { doorID = k, coords = { x = v.doors[1].objCoords.x, y = v.doors[1].objCoords.y, z = v.doors[1].objCoords.z } } )
-
-						Wait(500)
-					end
-			
 				end
 	
 			end
