@@ -37,14 +37,6 @@ RequestAnimation = function(anim)
 	return true
 end
 
-PerformLockpickAnimation = function ()
-	local playerPed = PlayerPedId()
-
-	ClearPedTasks(playerPed)
-
-	
-end
-
 PerformKeyAnimation = function (entity)
 	local playerPed = PlayerPedId()
 
