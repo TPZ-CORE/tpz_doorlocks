@@ -1,6 +1,6 @@
 Config = {}
 
-Config.DevMode = true
+Config.DevMode = false
 
 --[[-------------------------------------------------------
  General
@@ -11,38 +11,6 @@ Config.DoorKey = 0xC7B5340A
 
 -- The following rendering checks for near locked states / doors.
 Config.RenderDoorStateDistance = 30
-
--- Door Lockpicking is working ONLY for TPZ Properties (If a property has lockpicking enabled).
-Config.Lockpicking = {
-    Key      = 0x4AF4D473, -- Delete Key
-
-    Item     = "hardlockpick",
-
-    -- (3) By Default, all Lockpicking stages must be successfull to unlock the property door.
-    -- Stages also must be the required item quantity to have for lockpicking.
-    -- That means, a player must have X3 hardlockpick items.
-    Stages                   = 3,
-    NotEnoughLockpicksNotify = "~e~You don't have enough Advanced Lockpicks (X3) Required.",
-
-    RequiredOnlineJob = { 
-        Job = "police", 
-        Minimum = 5, 
-        Notify = true,
-        NotEnoughNotify = "~e~Not enough police to start the property robbery.",
-    },
-
-    -- TPZ Notify Support.
-    NotifyMessage = { 
-        title          = "Property Alert", 
-        message        = "A property is getting robbed, checkout the map for the location.", -- required jobs if notify is true.
-        icon           = "hunting",
-        duration       = 10,
-    },
-
-    -- Displaying the location where a property is getting robbed and its duration to stay active on the map.
-    -- Duration is also used for preventing notification spamming when police have been already notified.
-    Duration = 10, -- Time in minutes
-}
 
 --[[-------------------------------------------------------
  Door Locations
@@ -68,8 +36,6 @@ Config.DoorsList = {
 		textCoords  = vector3(-243.7268371582,765.04418945313,117.14251708984),
 		locked = true,
 		distance = 2.0,
-
-        canBreakIn = false, -- If players can use lockpicking to unlock the door.
 	},
 
     [2] = {
@@ -89,7 +55,6 @@ Config.DoorsList = {
 		locked = true,
 		distance = 2.0,
 
-        canBreakIn = false, -- If players can use lockpicking to unlock the door.
 	},
 
     -- Valentine Sheriffs
@@ -111,7 +76,6 @@ Config.DoorsList = {
 		locked = true,
 		distance = 2.0,
 
-        canBreakIn = false, -- If players can use lockpicking to unlock the door.
 	},
 
     [4] = { -- BACK DOOR
@@ -131,7 +95,6 @@ Config.DoorsList = {
 		locked = true,
 		distance = 2.0,
 
-        canBreakIn = false, -- If players can use lockpicking to unlock the door.
 	},
 
     
@@ -152,7 +115,6 @@ Config.DoorsList = {
 		locked = true,
 		distance = 2.0,
 
-        canBreakIn = false, -- If players can use lockpicking to unlock the door.
 	},
 
     [6] = { -- INSIDE MAIN JAIL DOOR
@@ -172,7 +134,6 @@ Config.DoorsList = {
 		locked = true,
 		distance = 2.0,
 
-        canBreakIn = false, -- If players can use lockpicking to unlock the door.
 	},
 
     
@@ -193,7 +154,6 @@ Config.DoorsList = {
 		locked = true,
 		distance = 2.0,
 
-        canBreakIn = false, -- If players can use lockpicking to unlock the door.
 	},
 	
     [8] = { -- INSIDE MAIN LEFT PRISON JAIL DOOR
@@ -213,7 +173,6 @@ Config.DoorsList = {
 		locked = true,
 		distance = 2.0,
 
-        canBreakIn = false, -- If players can use lockpicking to unlock the door.
 	},
 
     -- Valentine Medical
@@ -235,7 +194,6 @@ Config.DoorsList = {
 		locked = true,
 		distance = 2.0,
 
-        canBreakIn = false, -- If players can use lockpicking to unlock the door.
 	},
 
     [10] = { -- MEDICS BACK DOOR
@@ -255,13 +213,12 @@ Config.DoorsList = {
 		locked = true,
 		distance = 2.0,
 
-        canBreakIn = false, -- If players can use lockpicking to unlock the door.
 	},
 
     -- Valentine Gun Smiths
 
     [11] = { -- FRONT DOOR
-		authorizedJobs = { 'valgunsmith' },
+		authorizedJobs = { 'gunsmith' },
 
         doors = { 
 
@@ -277,11 +234,10 @@ Config.DoorsList = {
 		locked = true,
 		distance = 2.0,
 
-        canBreakIn = false, -- If players can use lockpicking to unlock the door.
 	},
 
     [12] = { -- BACK DOOR
-		authorizedJobs = { 'valgunsmith' },
+		authorizedJobs = { 'gunsmith' },
 
         doors = { 
 
@@ -297,22 +253,63 @@ Config.DoorsList = {
 		locked = true,
 		distance = 2.0,
 
-        canBreakIn = false, -- If players can use lockpicking to unlock the door.
 	},
+
+    [13] = { 
+        authorizedJobs = { 'collector' },
+
+        doors = { 
+
+            [1] = { 
+                objCoords = vector3(2851.93115234375, -1202.7430419921875, 47.59263610839844), 
+                objYaw = 94.99994659423828
+            },
+    
+            [2] = false, -- SET TO FALSE IF THERE IS NO SECOND DOOR.
+        },
+    
+        textCoords  = vector3(2851.93115234375, -1201.6430419921875, 48.59263610839844),
+        locked = true,
+        distance = 2.0,
+    
+    },
+
+    [14] = { 
+        authorizedJobs = { 'vet' },
+
+        doors = { 
+
+            [1] = { 
+                objCoords = vector3(-1682.832763671875, -340.6101379394531, 172.98583984375), 
+                objYaw = -35.00001525878906
+            },
+    
+            [2] = false, -- SET TO FALSE IF THERE IS NO SECOND DOOR.
+        },
+    
+        textCoords  = vector3(-1682.832763671875, -340.6101379394531, 173.98583984375),
+        locked = true,
+        distance = 2.0,
+    
+    },
+
+        
+    [15] = { 
+        authorizedJobs = { 'vet' },
+
+        doors = { 
+
+            [1] = { 
+                objCoords = vector3(-1678.74462890625, -336.68927001953125, 172.9930419921875), 
+                objYaw = 144.99996948242188
+            },
+    
+            [2] = false, -- SET TO FALSE IF THERE IS NO SECOND DOOR.
+        },
+    
+        textCoords  = vector3(-1678.74462890625, -336.68927001953125, 173.9930419921875),
+        locked = true,
+        distance = 2.0,
+    
+    },
 }
-
------------------------------------------------------------
---[[ Notification Functions  ]]--
------------------------------------------------------------
-
--- @param source is always null when called from client.
--- @param messageType returns "success" or "error" depends when and where the message is sent.
-function SendNotification(source, message, messageType)
-
-    if not source then
-        TriggerEvent('tpz_core:sendRightTipNotification', message, 3000)
-    else
-        TriggerClientEvent('tpz_core:sendRightTipNotification', source, message, 3000)
-    end
-  
-end
