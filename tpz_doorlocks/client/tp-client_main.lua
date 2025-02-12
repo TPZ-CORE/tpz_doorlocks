@@ -37,17 +37,18 @@ end
 -- Gets the player job when character is selected.
 AddEventHandler("tpz_core:isPlayerReady", function()
 
-    TriggerEvent("tpz_core:ExecuteServerCallBack", "tpz_core:getPlayerData", function(data)
-		
-		if data == nil then
-			return
-		end
+	Wait(2000)
 
-        PlayerData.Job = data.job
+	local data = exports.tpz_core:getCoreAPI().getPlayerClientData()
 
-		TriggerServerEvent("tpz_doorlocks:server:requestDoorlocks")
-    end)
+	if data == nil then
+		return
+	end
 
+	PlayerData.Job = data.job
+
+	TriggerServerEvent("tpz_doorlocks:server:requestDoorlocks")
+	
 end)
 
 -- Gets the player job when devmode set to true.
@@ -56,16 +57,15 @@ if Config.DevMode then
 
         Wait(2000)
 
-        TriggerEvent("tpz_core:ExecuteServerCallBack", "tpz_core:getPlayerData", function(data)
+        local data = exports.tpz_core:getCoreAPI().getPlayerClientData()
 
-			if data == nil then
-				return
-			end
+		if data == nil then
+			return
+		end
 
-            PlayerData.Job = data.job
+		PlayerData.Job = data.job
 
-			TriggerServerEvent("tpz_doorlocks:server:requestDoorlocks")
-        end)
+		TriggerServerEvent("tpz_doorlocks:server:requestDoorlocks")
 
     end)
 end
