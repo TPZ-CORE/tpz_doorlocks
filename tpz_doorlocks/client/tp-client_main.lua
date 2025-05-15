@@ -109,16 +109,18 @@ Citizen.CreateThread(function()
 
 			local dist = #(coords - location.doors[1].objCoords)
 
-			if dist <= Config.RenderDoorStateDistance then
-
 				for k, door in ipairs(location.doors) do
 
-					if door ~= false and not door.object and type(door) == 'table' then
-	
-						local shapeTest = StartShapeTestBox(door.objCoords, 1.0, 1.0, 1.0, 0.0, 0.0, 0.0, true, 16)
-						local rtnVal, hit, endCoords, surfaceNormal, entityHit = GetShapeTestResult(shapeTest)
-	
-						if DoesEntityExist(entityHit) then
+					if door ~= false and not door.object then
+
+						local distance = #(coords - door.objCoords)
+
+						if distance <= Config.RenderDoorStateDistance then
+						
+							local shapeTest = StartShapeTestBox(door.objCoords, 1.0, 1.0, 1.0, 0.0, 0.0, 0.0, true, 16)
+							local rtnVal, hit, endCoords, surfaceNormal, entityHit = GetShapeTestResult(shapeTest)
+
+							if DoesEntityExist(entityHit) then
 	
 							local model = GetEntityModel(entityHit)
 	
@@ -126,12 +128,10 @@ Citizen.CreateThread(function()
 	
 								if model == v[2] then
 									local doorcoords = vector3(v[4],v[5], v[6])
-									local a,b,c = table.unpack(doorcoords)
-									local d,f,g = table.unpack(door.objCoords)
-									local distance = GetDistanceBetweenCoords(a, b, c, d, f, g, false)
-									if distance <= 1 then
-										door.object = v[1]
+									local distance = #(doorcoords - door.objCoords)
 
+									if distance <= 1.2 then
+										door.object = v[1]
 									end
 								end
 	
