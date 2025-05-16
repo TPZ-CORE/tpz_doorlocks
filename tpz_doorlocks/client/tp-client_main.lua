@@ -109,43 +109,46 @@ Citizen.CreateThread(function()
 
 			local dist = #(coords - location.doors[1].objCoords)
 
-				for k, door in ipairs(location.doors) do
+			for k, door in ipairs(location.doors) do
 
-					if door ~= false and not door.object then
+            if door ~= false and not door.object then
 
-						local distance = #(coords - door.objCoords)
+               local distance = #(coords - door.objCoords)
 
-						if distance <= Config.RenderDoorStateDistance then
-						
-							local shapeTest = StartShapeTestBox(door.objCoords, 1.0, 1.0, 1.0, 0.0, 0.0, 0.0, true, 16)
-							local rtnVal, hit, endCoords, surfaceNormal, entityHit = GetShapeTestResult(shapeTest)
+               if distance <= Config.RenderDoorStateDistance then
+               
+                  local shapeTest = StartShapeTestBox(door.objCoords, 1.0, 1.0, 1.0, 0.0, 0.0, 0.0, true, 16)
+                  local rtnVal, hit, endCoords, surfaceNormal, entityHit = GetShapeTestResult(shapeTest)
 
-							if DoesEntityExist(entityHit) then
-	
-							local model = GetEntityModel(entityHit)
-	
-							for _,v in pairs(DOOR_HASHES) do 
-	
-								if model == v[2] then
-									local doorcoords = vector3(v[4],v[5], v[6])
-									local distance = #(doorcoords - door.objCoords)
+                  if DoesEntityExist(entityHit) then
 
-									if distance <= 1.2 then
-										door.object = v[1]
-									end
-								end
-	
-							end
-	
-						end
-	
-					end
-				end
-				
-			end
+                     local model = GetEntityModel(entityHit)
 
-		end
-	end
+                     for _,v in pairs(DOOR_HASHES) do 
+
+                        if model == v[2] then
+                           local doorcoords = vector3(v[4],v[5], v[6])
+                           local distance = #(doorcoords - door.objCoords)
+
+                           if distance <= 1.2 then
+                              door.object = v[1]
+                           end
+                        end
+
+                     end
+
+                  end
+
+               end
+
+            end
+         
+         end
+
+      end
+
+   end
+
 end)
 
 Citizen.CreateThread(function()
