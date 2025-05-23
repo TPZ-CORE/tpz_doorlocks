@@ -60,7 +60,7 @@ Config.DoorsList = {
     -- Valentine Sheriffs
 
     [3] = { -- FRONT DOOR
-		authorizedJobs = { 'police' },
+		authorizedJobs = { 'police', 'offpolice' },
 
         doors = { 
 
@@ -79,7 +79,7 @@ Config.DoorsList = {
 	},
 
     [4] = { -- BACK DOOR
-		authorizedJobs = { 'police' },
+		authorizedJobs = { 'police', 'offpolice' },
 
         doors = { 
 
@@ -99,7 +99,7 @@ Config.DoorsList = {
 
     
     [5] = { -- SIDE DOOR (JAIL DOOR)
-		authorizedJobs = { 'police' },
+		authorizedJobs = { 'police', 'offpolice' },
 
         doors = { 
 
@@ -118,7 +118,7 @@ Config.DoorsList = {
 	},
 
     [6] = { -- INSIDE MAIN JAIL DOOR
-		authorizedJobs = { 'police' },
+		authorizedJobs = { 'police', 'offpolice' },
 
         doors = { 
 
@@ -138,7 +138,7 @@ Config.DoorsList = {
 
     
     [7] = { -- INSIDE MAIN LEFT PRISON JAIL DOOR
-		authorizedJobs = { 'police' },
+		authorizedJobs = { 'police', 'offpolice' },
 
         doors = { 
 
@@ -157,7 +157,7 @@ Config.DoorsList = {
 	},
 	
     [8] = { -- INSIDE MAIN LEFT PRISON JAIL DOOR
-		authorizedJobs = { 'police' },
+		authorizedJobs = { 'police', 'offpolice' },
 
         doors = { 
 
@@ -178,7 +178,7 @@ Config.DoorsList = {
     -- Valentine Medical
 
     [9] = { -- MEDICS FRONT DOOR
-		authorizedJobs = { 'medic' },
+		authorizedJobs = { 'medic', 'offmedic' },
 
         doors = { 
 
@@ -197,7 +197,7 @@ Config.DoorsList = {
 	},
 
     [10] = { -- MEDICS BACK DOOR
-		authorizedJobs = { 'medic' },
+		authorizedJobs = { 'medic', 'offmedic' },
 
         doors = { 
 
