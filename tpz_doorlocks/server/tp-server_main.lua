@@ -1,4 +1,4 @@
-
+local TPZ = exports.tpz_core:getCoreAPI()
 
 local DoorsList = {}
 local LoadedDoorsList = false
@@ -6,13 +6,6 @@ local LoadedDoorsList = false
 -----------------------------------------------------------
 --[[ Local Functions ]]--
 -----------------------------------------------------------
-
--- @GetTableLength returns the length of a table.
-local GetTableLength = function(T)
-    local count = 0
-    for _ in pairs(T) do count = count + 1 end
-    return count
-end
 
 local LoadExistingDoorlockLocations = function ()
 
@@ -58,7 +51,7 @@ AddEventHandler("tpz_doorlocks:server:requestDoorlocks", function()
 		Wait(1000)
 	end
 
-	if GetTableLength(DoorsList) <= 0 then
+	if TPZ.GetTableLength(DoorsList) <= 0 then
 		return
 	end
 
